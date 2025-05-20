@@ -1,0 +1,463 @@
+/* FUENTES */
+body.no-animaciones *,
+body.no-animaciones *::before,
+body.no-animaciones *::after {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+body.sin-padding {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+body {
+  font-family: 'Asap', sans-serif;
+  font-weight: 400;
+  background: #EEAECA;
+  background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+  color: #333;
+  padding-top: 2rem;
+  padding-left: 10rem;
+  padding-right: 10rem;
+}
+
+#cowsay {
+  font-family: monospace;
+  font-size: 0.95rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  white-space: pre;
+  color: #333;
+  animation: fadeInDown 0.8s ease;
+}
+
+
+h1 {
+  font-family: 'Asap', sans-serif;
+  font-size: 3rem;
+  text-align: left;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #111;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.04);
+  animation: fadeInDown 0.8s ease;
+}
+
+.botonera {
+  margin-bottom: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.botonera button {
+  flex: auto;
+  display: flex;
+  justify-content: center;
+}
+
+#datosAutor p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0.2rem;
+  font-weight: 400;
+  text-align: left;
+  animation: fadeIn 1s ease;
+}
+
+/* CATEGORÍAS */
+details {
+  margin-bottom: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease;
+}
+
+summary {
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  background: #dee2e6;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s ease;
+}
+
+summary:hover {
+  background-color: #ced4da;
+}
+
+/* JUEGO */
+.juego {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+  margin: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.juego:hover {
+  transform: translateY(-2px);
+}
+
+.juego.si {
+  background-color: #d4edda;
+}
+
+.juego.no {
+  background-color: #f8d7da;
+}
+
+.juego.rata {
+  background-color: #fff3cd;
+}
+
+.juego-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.juego span {
+  flex: 1;
+  font-weight: 300;
+  transition: color 0.2s ease;
+}
+
+.juego-header:hover span {
+  color: #007bff;
+}
+
+.juego button {
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: transparent;
+  transition: transform 0.2s ease;
+}
+
+.juego button:hover {
+  transform: scale(1.2);
+}
+
+/* VIDEO + INFO */
+.video {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  animation: fadeIn 0.5s ease;
+  padding-bottom: 1rem;
+}
+
+.info {
+  flex: 1;
+}
+
+.info p {
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+iframe {
+  width: 300px;
+  height: 180px;
+  border: none;
+  flex-shrink: 0;
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+/* BOTÓN DE CAPTURA */
+#capturaBtn,
+button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: 'Asap', sans-serif;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#capturaBtn:hover,
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  body {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .botonera {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .botonera button {
+    flex: 1 1 45%;
+    max-width: 48%;
+  }
+
+  /* Captura en segunda línea, centrado */
+  #capturaBtn {
+    text-align: center;
+  }
+
+  .video {
+    flex-direction: column;
+    align-items: left;
+  }
+
+  .video iframe {
+    width: 100% !important;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .video img {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .juego button {
+    font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+
+
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#agregarJuego summary {
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  background: #dee2e6;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s ease;
+}
+
+#agregarJuego summary:hover {
+  background-color: #ced4da;
+}
+
+#formAgregarJuego {
+  padding: 1rem;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.form-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-campos input {
+  padding: 0.5rem 0.75rem;
+  font-family: 'Asap', sans-serif;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+}
+
+.form-campos input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+.form-botonera {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#formAgregarJuego button[type="submit"] {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: 'Asap', sans-serif;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#formAgregarJuego button[type="submit"]:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .form-campos {
+    grid-template-columns: 1fr;
+  }
+}
+
+#agregarJuego summary {
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  background: #f5d0ec; /* rosa pastel */
+  border-bottom: 1px solid #e0afd8;
+  transition: background-color 0.3s ease;
+  color: #5a1e4d;
+  font-family: 'Asap', sans-serif;
+}
+
+#agregarJuego summary:hover {
+  background-color: #f1c3e2;
+}
+
+#agregarJuego[open] summary {
+  background-color: #e7aacb;
+}
+
+.juego-header .btn-eliminar {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+  color: #dc3545;
+  /* rojo suave */
+}
+
+.juego-header .btn-eliminar:hover {
+  color: #b30000;
+  transform: scale(1.2);
+}
+
+#avisoAgregado {
+  margin-top: 0;
+  color: #155724;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-top: 0rem;
+  font-weight: 500;
+  font-family: 'Asap', sans-serif;
+  animation: fadeIn 0.4s ease;
+  gap: 0;
+}
+
+[contenteditable="true"]:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+[contenteditable="true"] {
+  cursor: text;
+  padding: 0 0.3rem;
+  transition: background-color 0.2s ease;
+}
+
+[contenteditable="true"]:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.editable:focus {
+  outline: 2px dashed #007bff !important;
+  background-color: #f0f8ff !important;
+  display: inline-block;
+}
+
+input:focus {
+  outline: 2px dashed #007bff !important;
+  background-color: #f0f8ff !important;
+}
+
+select:focus {
+  outline: 2px dashed #007bff !important;
+  background-color: #f0f8ff !important;
+}
+
+span:focus {
+  outline: 2px dashed #007bff !important;
+  background-color: #f0f8ff !important;
+}
+
+.link-externo {
+  color: #007bff;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 0.3rem;
+}
+
+.link-externo:hover {
+  text-decoration: underline;
+}

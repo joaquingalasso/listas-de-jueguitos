@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist de Juegos</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<!-- Asap desde Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&display=swap"
+  rel="stylesheet">
+
+<body>
+  <div id="capturable">
+    <h1 id="editableTitulo" contenteditable="true" class="editable"></h1>
+
+<div id="datosAutor" style="margin-bottom: 2rem;">
+  <p><strong>Hecha por</strong> <span id="editableAutor" contenteditable="true" class="editable"></span></p>
+  <p><strong>Para jugar con</strong> <span id="editableDestinatarios" contenteditable="true" class="editable"></span></p>
+</div>
+
+    <div id="checklist"></div>
+  </div>
+
+  <details id="agregarJuego">
+    <summary>Agregar nuevo juego</summary>
+    <form id="formAgregarJuego">
+      <div class="form-campos">
+        <input type="text" id="nombreJuego" placeholder="Nombre del juego" required>
+        <input type="text" id="grupoJuego" placeholder="Grupo (ej. Juegos cooperativos)" required>
+        <input type="text" id="categoriaJuego" placeholder="Categoría (ej. Puzzle)" required>
+        <input type="text" id="sinopsisJuego" placeholder="Sinopsis">
+        <input type="text" id="comentarioJuego" placeholder="Comentario personal">
+        <input type="text" id="precioJuego" placeholder="Precio">
+        <input type="text" id="videoJuego" placeholder="Link a video/img embebido">
+        <input type="text" id="enlaceJuego" placeholder="Link a tienda">
+      </div>
+      <div class="form-botonera">
+        <button type="submit">Agregar</button>
+      </div>
+    </form>
+  </details>
+  
+
+  <div class="botonera">
+    <button onclick="descargarPlantilla()">📄 Descargar</button>
+    <input type="file" id="importarArchivo" accept=".md" style="display: none;">
+    <button id="btnImportar">📂 Importar</button>
+    <button id="capturaBtn" onclick="capturarPagina()">📸 Capturar</button>
+    <button id="btnExportarJson">📤 JSON</button>
+  </div>
+  <pre id="cowsay">
+    __________________________
+   < ¿A qué chota jugamos? 🕹️ >
+    --------------------------
+           \   ^__^
+            \  (oo)\_______
+               (__)\       )\/\
+                   ||----w |
+                   ||     ||
+   </pre>
+   
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
