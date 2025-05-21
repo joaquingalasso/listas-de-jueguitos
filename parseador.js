@@ -36,6 +36,8 @@ function parsearMarkdown(md) {
       if (url.includes('watch?v=')) url = url.replace('watch?v=', 'embed/');
       else if (url.includes('youtu.be/')) url = `https://www.youtube.com/embed/${url.split('youtu.be/')[1]}`;
       juego.video = url;
+    } else if (line.startsWith('**Tienda:**')) {
+      juego.enlace = line.replace('**Tienda:**', '').trim();
     } else if (['✔️', '❌', '🐭'].includes(line.trim())) {
       juego.estado = line.trim();
     }
