@@ -64,12 +64,18 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
         div.className = `juego ${estadoClase(juego.estado)}`;
 
         const header = document.createElement('div');
-        header.className = 'juego-header';
-        // header.onclick = () => toggleVideo(header);
-        title.onclick = e => {
-          e.stopPropagation(); // para que no interfiera con los botones
-          toggleVideo(header);
-        };
+header.className = 'juego-header';
+// 🔻 Sacamos el onclick de acá
+
+const title = document.createElement('span');
+title.textContent = juego.nombre;
+title.classList.add('titulo-juego');
+
+// ✅ Ahora que `title` existe, sí podemos usarlo:
+title.onclick = e => {
+  e.stopPropagation();
+  toggleVideo(header);
+};
         
 
         const deleteBtn = document.createElement('button');
@@ -83,12 +89,10 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
             renderChecklist(dataActual);
           }
         };
+        
         header.appendChild(deleteBtn);
-
-        const title = document.createElement('span');
-        title.textContent = juego.nombre;
-        title.className = 'titulo-juego';
         header.appendChild(title);
+
 
 
         ['✔️', '🐭', '❌'].forEach(opcion => {
