@@ -26,29 +26,29 @@ function renderChecklist(data) {
   container.innerHTML = '';
 
   // Si no hay juegos cargados, mostrar mensaje
-const tieneJuegos = data.grupos.some(grupo =>
-  grupo.categorias.some(cat => cat.juegos.length > 0)
-);
+  const tieneJuegos = data.grupos.some(grupo =>
+    grupo.categorias.some(cat => cat.juegos.length > 0)
+  );
 
-if (!tieneJuegos) {
-  const mensaje = document.createElement('p');
-  mensaje.textContent = '🕳️ Todavía no hay ningún juego en tu lista.';
-  mensaje.style.fontStyle = 'italic';
-  mensaje.style.color = '#666';
-  mensaje.style.padding = '1rem';
-  mensaje.style.background = 'rgba(255, 255, 255, 0.5)';
-  mensaje.style.borderRadius = '8px';
-  mensaje.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-  mensaje.style.textAlign = 'center';
-  mensaje.style.animation = 'fadeIn 0.6s ease';
-  container.appendChild(mensaje);
-  return;
-}
+  if (!tieneJuegos) {
+    const mensaje = document.createElement('p');
+    mensaje.textContent = '🕳️ Todavía no hay ningún juego en tu lista.';
+    mensaje.style.fontStyle = 'italic';
+    mensaje.style.color = '#666';
+    mensaje.style.padding = '1rem';
+    mensaje.style.background = 'rgba(255, 255, 255, 0.5)';
+    mensaje.style.borderRadius = '8px';
+    mensaje.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+    mensaje.style.textAlign = 'center';
+    mensaje.style.animation = 'fadeIn 0.6s ease';
+    container.appendChild(mensaje);
+    return;
+  }
 
   data.grupos.forEach(grupo => {
     // Para grupos
-const grupoTitulo = document.createElement('h2');
-grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGrupo">${grupo.nombre}</span>`;
+    const grupoTitulo = document.createElement('h2');
+    grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGrupo">${grupo.nombre}</span>`;
     container.appendChild(grupoTitulo);
 
     grupo.categorias.forEach(cat => {
@@ -64,39 +64,46 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
         div.className = `juego ${estadoClase(juego.estado)}`;
 
         const header = document.createElement('div');
-header.className = 'juego-header';
-// 🔻 Sacamos el onclick de acá
+        header.className = 'juego-header';
+        // 🔻 Sacamos el onclick de acá
 
-const title = document.createElement('span');
-title.textContent = juego.nombre;
-title.classList.add('titulo-juego');
+        const title = document.createElement('span');
+        title.textContent = juego.nombre;
+        title.classList.add('titulo-juego');
 
-// ✅ Ahora que `title` existe, sí podemos usarlo:
-title.onclick = e => {
-  e.stopPropagation();
-  toggleVideo(header);
-};
-        
+        title.contentEditable = true;
+        title.classList.add('editable');
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '🗑️';
-        deleteBtn.title = 'Eliminar juego';
-        deleteBtn.className = 'btn-eliminar';
-        deleteBtn.onclick = e => {
-          e.stopPropagation();
-          if (confirm(`¿Eliminar "${juego.nombre}"?`)) {
-            eliminarJuego(dataActual, grupo.nombre, cat.nombre, juego.nombre);
-            renderChecklist(dataActual);
+        title.addEventListener('input', () => {
+          juego.nombre = title.textContent.trim();
+        });
+
+        title.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            title.blur();
           }
-        };
-        
+        });
 
-        title.onclick = e => {
+        title.addEventListener('blur', () => {
+          if (title.textContent.trim() === '') {
+            title.textContent = '—';
+            juego.nombre = '—';
+          }
+        });
+
+
+
+        const iconoBtn = document.createElement('span');
+        iconoBtn.textContent = juego.icono || '🎮';
+        iconoBtn.className = 'juego-icono';
+        iconoBtn.title = 'Ver detalle';
+        iconoBtn.style.cursor = 'pointer';
+        iconoBtn.onclick = e => {
           e.stopPropagation();
           toggleVideo(header);
         };
-        
-        header.appendChild(deleteBtn);
+        header.appendChild(iconoBtn);
         header.appendChild(title);
 
 
@@ -106,35 +113,37 @@ title.onclick = e => {
           btn.textContent = opcion;
           btn.onclick = e => {
             e.stopPropagation(); // ← Esto evita que el botón dispare el click en el header
-  toggle(btn, opcion); // o eliminarJuego, según el caso
+            toggle(btn, opcion); // o eliminarJuego, según el caso
           };
           header.appendChild(btn);
         });
 
         const video = document.createElement('div');
-video.className = 'video';
-video.style.display = 'none';
+        video.className = 'video';
+        video.style.display = 'none';
 
-let embedHTML = '';
-if (juego.video) {
-  const url = juego.video;
+        let embedHTML = '';
+        if (juego.video) {
+          const url = juego.video;
 
-  if (url.includes('youtube.com') || url.includes('youtu.be')) {
-    const embedUrl = url.includes('watch?v=')
-      ? url.replace('watch?v=', 'embed/')
-      : url.includes('youtu.be/')
-        ? `https://www.youtube.com/embed/${url.split('youtu.be/')[1]}`
-        : url;
-    embedHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-  } else if (url.match(/\.(gif|jpe?g|png|webp)$/)) {
-    embedHTML = `<img src="${url}" alt="Imagen o GIF" />`;
-  } else {
-    embedHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
-  }
-}
+          if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const embedUrl = url.includes('watch?v=')
+              ? url.replace('watch?v=', 'embed/')
+              : url.includes('youtu.be/')
+                ? `https://www.youtube.com/embed/${url.split('youtu.be/')[1]}`
+                : url;
+            embedHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+          } else if (url.match(/\.(gif|jpe?g|png|webp)$/)) {
+            embedHTML = `<img src="${url}" alt="Imagen o GIF" />`;
+          } else {
+            embedHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+          }
+        }
 
-video.innerHTML = `
-  <iframe src="${juego.video}" allowfullscreen></iframe>
+        video.innerHTML = `
+  <iframe src="${juego.video}" allowfullscreen style="
+    margin-bottom: 1rem;
+"></iframe>
   <div class="info">
   <p>📝 <span contenteditable="true" class="editable">${juego.sinopsis || '—'}</span></p>
   <p>💬 <span contenteditable="true" class="editable">${juego.comentario || '—'}</span></p>
@@ -152,19 +161,93 @@ video.innerHTML = `
       });
 
       // Hacer la lista de juegos sortable
-const juegosEnCategoria = details.querySelectorAll('.juego');
-const sortableContainer = document.createElement('div');
-sortableContainer.classList.add('sortable-juegos');
+      const juegosEnCategoria = details.querySelectorAll('.juego');
+      const sortableContainer = document.createElement('div');
+      sortableContainer.classList.add('sortable-juegos');
 
-juegosEnCategoria.forEach(j => sortableContainer.appendChild(j));
-details.appendChild(sortableContainer);
+      juegosEnCategoria.forEach(j => sortableContainer.appendChild(j));
+      details.appendChild(sortableContainer);
 
-Sortable.create(sortableContainer, {
-  group: 'juegos',
-  animation: 150,
-  handle: '.titulo-juego', // ← ahora sólo se puede arrastrar desde ahí
-  onEnd: () => actualizarOrdenDesdeDOM()
-});
+      Sortable.create(sortableContainer, {
+        group: {
+          name: 'juegos',
+          pull: true,
+          put: true
+        },
+        onEnd: evt => {
+          const item = evt.item;
+          const destino = evt.to;
+          const origen = evt.from;
+
+          const nombreJuego = item.querySelector('.titulo-juego')?.textContent.trim();
+
+          const categoriaOrigenEl = origen.closest('details');
+          const categoriaDestinoEl = destino.closest('details');
+
+          const nombreCategoriaOrigen = categoriaOrigenEl?.querySelector('summary span')?.textContent.trim();
+          const nombreGrupoOrigen = categoriaOrigenEl?.previousElementSibling?.querySelector('span')?.textContent.trim();
+
+          const nombreCategoriaDestino = categoriaDestinoEl?.querySelector('summary span')?.textContent.trim();
+          const nombreGrupoDestino = categoriaDestinoEl?.previousElementSibling?.querySelector('span')?.textContent.trim();
+
+          // Si se soltó fuera de todo (por ejemplo, arrastrado al vacío), borramos
+          const seSoltoFuera = !categoriaDestinoEl || !categoriaDestinoEl.closest('#checklist');
+          if (seSoltoFuera) {
+            item.classList.add('borrable');
+            setTimeout(() => {
+              eliminarJuego(dataActual, nombreGrupoOrigen, nombreCategoriaOrigen, nombreJuego);
+              renderChecklist(dataActual);
+              configurarEditables();
+            }, 250);
+            return;
+          }
+
+          // Si se movió, actualizar la estructura
+          if (nombreGrupoOrigen !== nombreGrupoDestino || nombreCategoriaOrigen !== nombreCategoriaDestino) {
+            const grupoOrigen = dataActual.grupos.find(g => g.nombre === nombreGrupoOrigen);
+            const categoriaOrigen = grupoOrigen?.categorias.find(c => c.nombre === nombreCategoriaOrigen);
+            const juego = categoriaOrigen?.juegos.find(j => j.nombre === nombreJuego);
+
+            if (!juego) return;
+
+            // Eliminar del lugar original
+            categoriaOrigen.juegos = categoriaOrigen.juegos.filter(j => j.nombre !== nombreJuego);
+
+            // Agregar al destino
+            const grupoDestino = dataActual.grupos.find(g => g.nombre === nombreGrupoDestino);
+            const categoriaDestino = grupoDestino?.categorias.find(c => c.nombre === nombreCategoriaDestino);
+
+            if (categoriaDestino) {
+              categoriaDestino.juegos.splice(evt.newIndex, 0, juego);
+            }
+          } else {
+            // Solo reordenamiento dentro de la misma categoría
+            const grupo = dataActual.grupos.find(g => g.nombre === nombreGrupoDestino);
+            const categoria = grupo?.categorias.find(c => c.nombre === nombreCategoriaDestino);
+
+            if (categoria) {
+              const nuevosJuegos = [];
+              destino.querySelectorAll('.juego').forEach(div => {
+                const nombre = div.querySelector('.titulo-juego')?.textContent.trim();
+                const juego = categoria.juegos.find(j => j.nombre === nombre);
+                if (juego) nuevosJuegos.push(juego);
+              });
+              categoria.juegos = nuevosJuegos;
+            }
+          }
+
+          // Finalmente, actualizar visualmente
+          limpiarEstructura(dataActual);
+          renderChecklist(dataActual);
+          configurarEditables();
+        }
+
+
+
+
+
+      });
+
 
 
 
@@ -173,16 +256,16 @@ Sortable.create(sortableContainer, {
   });
 
   // Escuchar cambios en campos editables
-const autorSpan = document.getElementById('editableAutor');
-const destinatariosSpan = document.getElementById('editableDestinatarios');
+  const autorSpan = document.getElementById('editableAutor');
+  const destinatariosSpan = document.getElementById('editableDestinatarios');
 
-autorSpan.addEventListener('input', () => {
-  dataActual.autor = autorSpan.textContent.trim();
-});
+  autorSpan.addEventListener('input', () => {
+    dataActual.autor = autorSpan.textContent.trim();
+  });
 
-destinatariosSpan.addEventListener('input', () => {
-  dataActual.destinatarios = destinatariosSpan.textContent.trim();
-});
+  destinatariosSpan.addEventListener('input', () => {
+    dataActual.destinatarios = destinatariosSpan.textContent.trim();
+  });
 
 }
 
@@ -213,15 +296,6 @@ function actualizarOrdenDesdeDOM() {
   configurarEditables(); // si querés mantener editables activos luego del render
 }
 
-
-
-
-function estadoClase(e) {
-  if (e === '✔️') return 'si';
-  if (e === '❌') return 'no';
-  if (e === '🐭') return 'rata';
-  return '';
-}
 function estadoClase(e) {
   if (e === '✔️') return 'si';
   if (e === '❌') return 'no';
@@ -231,7 +305,7 @@ function estadoClase(e) {
 
 function toggle(btn, tipo) {
   const contenedor = btn.closest('.juego');
-  
+
   // Ver si ya tiene el estado actual
   const yaTenia = contenedor.classList.contains(estadoClase(tipo));
 
@@ -287,26 +361,26 @@ function capturarPagina() {
 
   // Ocultar botones no seleccionados
   // Ocultar botones no seleccionados y el tacho
-const juegos = document.querySelectorAll(".juego");
-const ocultos = [];
+  const juegos = document.querySelectorAll(".juego");
+  const ocultos = [];
 
-juegos.forEach(juego => {
-  const estado = juego.classList.contains('si') ? '✔️'
-    : juego.classList.contains('no') ? '❌'
-    : juego.classList.contains('rata') ? '🐭'
-    : null;
+  juegos.forEach(juego => {
+    const estado = juego.classList.contains('si') ? '✔️'
+      : juego.classList.contains('no') ? '❌'
+        : juego.classList.contains('rata') ? '🐭'
+          : null;
 
-  const botones = juego.querySelectorAll('button');
-  botones.forEach(btn => {
-    const esEstadoActual = btn.textContent === estado;
-    const esTacho = btn.classList.contains('btn-eliminar');
+    const botones = juego.querySelectorAll('button');
+    botones.forEach(btn => {
+      const esEstadoActual = btn.textContent === estado;
+      const esTacho = btn.classList.contains('btn-eliminar');
 
-    if (!esEstadoActual || esTacho) {
-      ocultos.push(btn);
-      btn.style.display = 'none';
-    }
+      if (!esEstadoActual || esTacho) {
+        ocultos.push(btn);
+        btn.style.display = 'none';
+      }
+    });
   });
-});
 
   // Esperar al próximo frame + una pausa mínima para asegurar render completo
   requestAnimationFrame(() => {
@@ -356,13 +430,13 @@ function descargarPlantilla() {
     if (grupoNombre) dataActual.grupos[gIndex].nombre = grupoNombre;
 
     const categoriasDOM = [];
-let current = grupoH2.nextElementSibling;
-while (current && current.tagName !== 'H2') {
-  if (current.tagName === 'DETAILS') {
-    categoriasDOM.push(current);
-  }
-  current = current.nextElementSibling;
-}
+    let current = grupoH2.nextElementSibling;
+    while (current && current.tagName !== 'H2') {
+      if (current.tagName === 'DETAILS') {
+        categoriasDOM.push(current);
+      }
+      current = current.nextElementSibling;
+    }
 
     categoriasDOM?.forEach((detailsEl, cIndex) => {
       const catNombre = detailsEl.querySelector('summary span')?.textContent.trim();
@@ -397,6 +471,7 @@ while (current && current.tagName !== 'H2') {
       cat.juegos.forEach(juego => {
         md += `### ${juego.nombre || '—'}\n`;
         md += `${juego.estado || ''}\n`;
+        if (juego.icono) md += `**Icono:** ${juego.icono}\n`;
         if (juego.sinopsis) md += `**Sinopsis:** ${juego.sinopsis}\n`;
         if (juego.comentario) md += `**Comentario:** ${juego.comentario}\n`;
         if (juego.precio) md += `**Precio:** ${juego.precio}\n`;
@@ -458,6 +533,8 @@ function parsearMarkdown(md) {
       juego.video = url;
     } else if (['✔️', '❌', '🐭'].includes(line.trim())) {
       juego.estado = line.trim();
+    } else if (line.startsWith('**Icono:**')) {
+      juego.icono = line.replace('**Icono:**', '').trim();
     }
   }
 
@@ -564,6 +641,9 @@ document.getElementById('btnExportarJson').addEventListener('click', () => {
 document.getElementById('formAgregarJuego').addEventListener('submit', function (e) {
   e.preventDefault();
 
+
+  const emoji = document.getElementById('emojiJuego').value.trim();
+  const icono = emoji || '🎮'; // default si no se elige uno
   const nombre = document.getElementById('nombreJuego').value.trim();
   const grupo = document.getElementById('grupoJuego').value.trim();
   const categoria = document.getElementById('categoriaJuego').value.trim();
@@ -579,6 +659,7 @@ document.getElementById('formAgregarJuego').addEventListener('submit', function 
   else if (video.includes('youtu.be/')) video = `https://www.youtube.com/embed/${video.split('youtu.be/')[1]}`;
 
   const nuevoJuego = {
+    icono,
     nombre,
     estado: '', // o null, según cómo manejes los botones luego
     sinopsis,
@@ -609,23 +690,23 @@ document.getElementById('formAgregarJuego').addEventListener('submit', function 
   renderChecklist(dataActual);
 
   configurarEditables();
-  
 
-// Eliminar mensaje anterior si lo hubiera
-const viejoAviso = document.getElementById('avisoAgregado');
-if (viejoAviso) viejoAviso.remove();
 
-// Crear nuevo mensaje
-const aviso = document.createElement('p');
-aviso.id = 'avisoAgregado';
-aviso.textContent = `✅ "${nombre}" fue agregado a "${categoria}"`;
+  // Eliminar mensaje anterior si lo hubiera
+  const viejoAviso = document.getElementById('avisoAgregado');
+  if (viejoAviso) viejoAviso.remove();
 
-// Insertarlo después del details (fuera del form)
-const details = document.getElementById('agregarJuego');
-details.parentNode.insertBefore(aviso, details.nextSibling);
+  // Crear nuevo mensaje
+  const aviso = document.createElement('p');
+  aviso.id = 'avisoAgregado';
+  aviso.textContent = `✅ "${nombre}" fue agregado a "${categoria}"`;
 
-// Borrarlo luego de 2 segundos
-setTimeout(() => aviso.remove(), 5000);
+  // Insertarlo después del details (fuera del form)
+  const details = document.getElementById('agregarJuego');
+  details.parentNode.insertBefore(aviso, details.nextSibling);
+
+  // Borrarlo luego de 2 segundos
+  setTimeout(() => aviso.remove(), 5000);
 
 
   // Resetear form
@@ -699,7 +780,7 @@ function configurarEditables() {
         el.blur(); // salir del modo edición
       }
     });
-  
+
     el.addEventListener('blur', () => {
       const texto = el.textContent.trim();
       if (texto === '') {
@@ -723,3 +804,15 @@ function limpiarEstructura(data) {
     })
     .filter(grupo => grupo.categorias.length > 0);
 }
+
+const picker = document.querySelector('emoji-picker');
+const inputEmoji = document.getElementById('emojiJuego');
+
+picker.addEventListener('emoji-click', event => {
+  inputEmoji.value = event.detail.unicode;
+});
+
+inputEmoji.addEventListener('input', () => {
+  const emoji = [...inputEmoji.value][0] || '';
+  inputEmoji.value = emoji;
+});

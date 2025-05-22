@@ -26,12 +26,14 @@
 </div>
 
     <div id="checklist"></div>
+    
+
   </div>
 
   <details id="agregarJuego">
     <summary>Agregar nuevo juego</summary>
     <form id="formAgregarJuego">
-      <div class="form-campos">
+      <div class="form-campos">        
         <input type="text" id="nombreJuego" placeholder="Nombre del juego" required>
         <input type="text" id="grupoJuego" placeholder="Grupo (ej. Juegos cooperativos)" required>
         <input type="text" id="categoriaJuego" placeholder="Categoría (ej. Puzzle)" required>
@@ -40,6 +42,8 @@
         <input type="text" id="precioJuego" placeholder="Precio">
         <input type="text" id="videoJuego" placeholder="Link a video/img embebido">
         <input type="text" id="enlaceJuego" placeholder="Link a tienda">
+        <emoji-picker id="picker"></emoji-picker>
+        <input type="text" id="emojiJuego" placeholder="Elegí un emoji" readonly required>
       </div>
       <div class="form-botonera">
         <button type="submit">Agregar</button>
@@ -68,6 +72,7 @@
    
 
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script src="script.js"></script>
 </body>
