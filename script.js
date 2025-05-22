@@ -61,50 +61,55 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
 
       cat.juegos.forEach(juego => {
         const div = document.createElement('div');
-div.className = `juego ${estadoClase(juego.estado)}`;
+        div.className = `juego ${estadoClase(juego.estado)}`;
 
-const header = document.createElement('div');
+        const header = document.createElement('div');
 header.className = 'juego-header';
-
-// ☰ Manejador de arrastre
-const handle = document.createElement('span');
-handle.textContent = '☰';
-handle.classList.add('drag-handle');
-header.appendChild(handle);
-
-// Evento para desplegar (excepto si es botón o el handle)
-header.addEventListener('click', e => {
-  if (e.target.tagName === 'BUTTON' || e.target.classList.contains('drag-handle')) return;
-  toggleVideo(header);
-});
-
-const deleteBtn = document.createElement('button');
-deleteBtn.textContent = '🗑️';
-deleteBtn.title = 'Eliminar juego';
-deleteBtn.className = 'btn-eliminar';
-deleteBtn.onclick = e => {
-  e.stopPropagation();
-  if (confirm(`¿Eliminar "${juego.nombre}"?`)) {
-    eliminarJuego(dataActual, grupo.nombre, cat.nombre, juego.nombre);
-    renderChecklist(dataActual);
-  }
-};
-header.appendChild(deleteBtn);
+// 🔻 Sacamos el onclick de acá
 
 const title = document.createElement('span');
 title.textContent = juego.nombre;
 title.classList.add('titulo-juego');
-header.appendChild(title);
 
-['✔️', '🐭', '❌'].forEach(opcion => {
-  const btn = document.createElement('button');
-  btn.textContent = opcion;
-  btn.onclick = e => {
-    e.stopPropagation();
-    toggle(btn, opcion);
-  };
-  header.appendChild(btn);
-});
+// ✅ Ahora que `title` existe, sí podemos usarlo:
+title.onclick = e => {
+  e.stopPropagation();
+  toggleVideo(header);
+};
+        
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.title = 'Eliminar juego';
+        deleteBtn.className = 'btn-eliminar';
+        deleteBtn.onclick = e => {
+          e.stopPropagation();
+          if (confirm(`¿Eliminar "${juego.nombre}"?`)) {
+            eliminarJuego(dataActual, grupo.nombre, cat.nombre, juego.nombre);
+            renderChecklist(dataActual);
+          }
+        };
+        
+
+        title.onclick = e => {
+          e.stopPropagation();
+          toggleVideo(header);
+        };
+        
+        header.appendChild(deleteBtn);
+        header.appendChild(title);
+
+
+
+        ['✔️', '🐭', '❌'].forEach(opcion => {
+          const btn = document.createElement('button');
+          btn.textContent = opcion;
+          btn.onclick = e => {
+            e.stopPropagation(); // ← Esto evita que el botón dispare el click en el header
+  toggle(btn, opcion); // o eliminarJuego, según el caso
+          };
+          header.appendChild(btn);
+        });
 
         const video = document.createElement('div');
 video.className = 'video';
@@ -157,7 +162,7 @@ details.appendChild(sortableContainer);
 Sortable.create(sortableContainer, {
   group: 'juegos',
   animation: 150,
-  handle: '.drag-handle',
+  handle: '.titulo-juego', // ← ahora sólo se puede arrastrar desde ahí
   onEnd: () => actualizarOrdenDesdeDOM()
 });
 
@@ -184,60 +189,29 @@ destinatariosSpan.addEventListener('input', () => {
 function actualizarOrdenDesdeDOM() {
   const checklist = document.getElementById('checklist');
 
-  const nuevoData = {
-    ...dataActual,
-    grupos: []
-  };
+  dataActual.grupos.forEach(grupo => {
+    grupo.categorias.forEach(cat => {
+      const container = Array.from(checklist.querySelectorAll('details'))
+        .find(d => d.querySelector('summary')?.textContent === cat.nombre);
+      if (!container) return;
 
-  const grupoNodes = checklist.querySelectorAll('h2');
+      const juegosNuevos = [];
+      container.querySelectorAll('.juego').forEach(div => {
+        const nombre = div.querySelector('span')?.textContent;
+        const juego = cat.juegos.find(j => j.nombre === nombre);
+        if (juego) juegosNuevos.push(juego);
+      });
 
-  grupoNodes.forEach(h2 => {
-    const nombreGrupo = h2.querySelector('span')?.textContent.trim();
-    const grupoOriginal = dataActual.grupos.find(g => g.nombre === nombreGrupo);
-    if (!grupoOriginal) return;
-
-    const grupo = {
-      nombre: nombreGrupo,
-      categorias: []
-    };
-
-    let current = h2.nextElementSibling;
-
-    while (current && current.tagName !== 'H2') {
-      if (current.tagName === 'DETAILS') {
-        const nombreCat = current.querySelector('summary span')?.textContent.trim();
-        const catOriginal = grupoOriginal.categorias.find(c => c.nombre === nombreCat);
-        if (!catOriginal) continue;
-
-        const juegos = [];
-        const juegosDOM = current.querySelectorAll('.juego');
-
-        juegosDOM.forEach(div => {
-          const nombreJuego = div.querySelector('.titulo-juego')?.textContent.trim();
-          const juego = dataActual.grupos
-            .flatMap(g => g.categorias.flatMap(c => c.juegos))
-            .find(j => j.nombre === nombreJuego);
-
-          if (juego) juegos.push(juego);
-        });
-
-        grupo.categorias.push({
-          nombre: nombreCat,
-          juegos
-        });
-      }
-
-      current = current.nextElementSibling;
-    }
-
-    nuevoData.grupos.push(grupo);
+      cat.juegos = juegosNuevos;
+    });
   });
 
-  dataActual = nuevoData;
-  renderChecklist(dataActual);
-  configurarEditables();
-}
+  limpiarEstructura(dataActual);
 
+  // 🔁 Volver a renderizar para reflejar la limpieza
+  renderChecklist(dataActual);
+  configurarEditables(); // si querés mantener editables activos luego del render
+}
 
 
 

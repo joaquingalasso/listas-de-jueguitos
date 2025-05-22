@@ -107,7 +107,7 @@ summary:hover {
 }
 
 
-.juego:hover {
+.sortable-juegos:hover {
   transform: translateY(-2px);
 }
 
@@ -460,11 +460,4 @@ span:focus {
 
 .link-externo:hover {
   text-decoration: underline;
-}
-
-.drag-handle {
-  cursor: grab;
-  padding: 0 0.5rem;
-  font-weight: bold;
-  user-select: none;
 }
