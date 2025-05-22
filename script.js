@@ -65,7 +65,12 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
 
         const header = document.createElement('div');
         header.className = 'juego-header';
-        header.onclick = () => toggleVideo(header);
+        // header.onclick = () => toggleVideo(header);
+        title.onclick = e => {
+          e.stopPropagation(); // para que no interfiera con los botones
+          toggleVideo(header);
+        };
+        
 
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = '🗑️';
@@ -82,6 +87,7 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
 
         const title = document.createElement('span');
         title.textContent = juego.nombre;
+        title.className = 'titulo-juego';
         header.appendChild(title);
 
 
@@ -146,8 +152,10 @@ details.appendChild(sortableContainer);
 Sortable.create(sortableContainer, {
   group: 'juegos',
   animation: 150,
+  handle: '.titulo-juego', // ← ahora sólo se puede arrastrar desde ahí
   onEnd: () => actualizarOrdenDesdeDOM()
 });
+
 
 
       container.appendChild(details);
