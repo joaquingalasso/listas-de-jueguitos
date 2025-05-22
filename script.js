@@ -89,8 +89,8 @@ grupoTitulo.innerHTML = `<span contenteditable="true" class="editable editableGr
           const btn = document.createElement('button');
           btn.textContent = opcion;
           btn.onclick = e => {
-            toggle(btn, opcion);
-            e.stopPropagation();
+            e.stopPropagation(); // ← Esto evita que el botón dispare el click en el header
+  toggle(btn, opcion); // o eliminarJuego, según el caso
           };
           header.appendChild(btn);
         });
